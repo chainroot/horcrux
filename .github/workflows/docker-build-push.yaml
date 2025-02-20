@@ -71,6 +71,7 @@ jobs:
         with:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          file: docker/horcrux/Dockerfile
           outputs: type=image,"name=${{ env.GHCR_SLUG }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
