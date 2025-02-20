@@ -46,6 +46,9 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=tag
+          labels: |
+            org.opencontainers.image.title=${{ env.GHCR_SLUG }}
+          bake-target: default  # 👈 Add this to define a default target
       -
         name: Rename meta bake definition file
         run: |
