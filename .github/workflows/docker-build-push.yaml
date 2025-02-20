@@ -29,8 +29,6 @@ jobs:
       contents: read
       # required to push to GHCR
       packages: write
-    needs:
-      - prepare
     strategy:
       fail-fast: false
       matrix:
