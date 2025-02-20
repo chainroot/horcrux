@@ -106,17 +106,17 @@ jobs:
         uses: docker/bake-action@v5
         with:
           files: |
-            ./docker/horcrux/Dockerfile
             ./docker-bake.hcl
             /tmp/bake-meta.json
           targets: image
+          workdir: ./
           set: |
             *.tags=
             *.platform=${{ matrix.platform }}
             *.cache-from=type=gha,scope=build-${{ env.PLATFORM_PAIR }}
             *.cache-to=type=gha,scope=build-${{ env.PLATFORM_PAIR }}
             *.output=type=image,"name=${{ env.GHCR_SLUG }}",push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
-            *.context=./
+            *.dockerfile=./docker/horcrux/Dockerfile
       -
         name: Export digest
         run: |
