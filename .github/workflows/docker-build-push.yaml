@@ -35,7 +35,7 @@ jobs:
         name: Create matrix
         id: platforms
         run: |
-          echo "matrix=$(docker buildx bake image-all --print | jq -cr '.target."image-all".platforms')" >>${GITHUB_OUTPUT}
+          echo "matrix=$(echo '[\"linux/amd64\", \"linux/arm64\"]')" >>${GITHUB_OUTPUT}
       -
         name: Docker meta
         id: meta
@@ -43,6 +43,9 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_SLUG }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
       -
         name: Rename meta bake definition file
         run: |
@@ -106,7 +109,6 @@ jobs:
         uses: docker/bake-action@v5
         with:
           files: |
-            ./docker-bake.hcl
             /tmp/bake-meta.json
           targets: image
           workdir: ./
