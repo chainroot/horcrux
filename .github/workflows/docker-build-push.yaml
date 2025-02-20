@@ -30,10 +30,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Create matrix
-        id: platforms
-        run: |
-          echo 'matrix=["linux/amd64", "linux/arm64"]' >> $GITHUB_OUTPUT
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -58,7 +54,6 @@ jobs:
           retention-days: 1
 
   build:
-    runs-on: ubuntu
     permissions:
       # same as global permissions
       contents: read
@@ -69,7 +64,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: ${{ fromJson(needs.prepare.outputs.matrix) }}
+        include:
+          - platform: linux/amd64
+            runner: blacksmith
+          - platform: linux/arm64
+            runner: blacksmith-arm
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Prepare
         run: |
@@ -82,8 +82,7 @@ jobs:
         with:
           name: bake-meta
           path: ${{ runner.temp }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
